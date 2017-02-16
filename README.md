@@ -1,2 +1,3 @@
-# elastic-docker
-Minimal Elasticsearch + Kibana setup
+# Minimal Elasticsearch + Kibana setup
+
+Using the official Elastic containers and binding to the default ports.

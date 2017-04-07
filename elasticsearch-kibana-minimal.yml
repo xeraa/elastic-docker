@@ -7,7 +7,7 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - esdata1:/usr/share/elasticsearch/data
+      - /usr/share/elasticsearch/data
     ports:
       - 9200:9200
 
@@ -17,7 +17,3 @@ services:
       - elasticsearch
     ports:
       - 5601:5601
-
-volumes:
-  esdata1:
-    driver: local

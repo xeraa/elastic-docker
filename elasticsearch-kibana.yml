@@ -11,12 +11,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
     mem_limit: 1g
-    cap_add:
-      - IPC_LOCK
     volumes:
       - esdata1:/usr/share/elasticsearch/data
     ports:

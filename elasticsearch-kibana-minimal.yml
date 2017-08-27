@@ -4,8 +4,6 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTIC_VERSION
-    cap_add:
-      - IPC_LOCK
     volumes:
       - /usr/share/elasticsearch/data
     ports:

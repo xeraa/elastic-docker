@@ -65,19 +65,19 @@ services:
     user: root
     image: "docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}"
     volumes:
-      #Mount the filebeat configuration so users can make edit
+      #Mount the Filebeat configuration so users can make edits.
       - ./config/beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       #Mount the prospectors directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
       - ./config/beats/filebeat/prospectors.d/:/usr/share/filebeat/prospectors.d/
-      #Mount the nginx logs into the filebeat container so we can access and index them using the filebeat nginx module.
+      #Mount the nginx logs into the Filebeat container so we can access and index them using the Filebeat nginx module.
       - ./logs/nginx/:/var/log/nginx/
-      #Mount the mysql logs into the filebeat container so we can access and and index them using the filebeat apache module.
+      #Mount the MySQL logs into the Filebeat container so we can access and and index them using the Filebeat MySQL module.
       - ./logs/mysql/:/var/log/mysql/
-      #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the filebeat system module.
+      #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the Filebeat system module.
       - /private/var/log/:/var/log/host/:ro
-      #Mount the docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d
+      #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
       - /var/lib/docker/containers:/hostfs/var/lib/docker/containers
-      #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication
+      #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication.
       - filebeatdata:/usr/share/filebeat/data/
     networks: ['stack']
     command: filebeat -e -E output.elasticsearch.username=elastic -E output.elasticsearch.password=${ES_PASSWORD} -strict.perms=false
@@ -143,7 +143,7 @@ services:
 
   #MySQL container
   mysql:
-    container_name: mqsql
+    container_name: mysql
     hostname: mysql
     build: ${PWD}/config/mysql
     environment:

@@ -62,7 +62,6 @@ The following Beats modules are utilised in this stack example to provide data a
     - `mysql` - port `3306`
 
 1. Metricbeat
-    - `apache` module with `status` metricset
     - `docker` module with `container`, `cpu`, `diskio`, `healthcheck`, `info`, `memory`, `network` metricsets
     - `mysql` module with `status` metricset
     - `nginx` module with `stubstatus` metricset
@@ -77,7 +76,6 @@ The following Beats modules are utilised in this stack example to provide data a
     - `system` module with `syslog` metricset
     - `mysql` module with `access` and `slowlog` `metricsets`
     - `nginx` module with `access` and `error` `metricsets`
-    - `apache` module with `access` and `error` `metricsets`
 
 
 ## Technical notes
@@ -85,7 +83,7 @@ The following Beats modules are utilised in this stack example to provide data a
 The following summarises some important technical considerations:
 
 1. The Elasticsearch instances uses a named volume `esdata` for data persistence between restarts. It exposes HTTP port 9200 for communication with other containers.
-1. Environment variable defaults can be found in the file .env`
+1. Environment variable defaults can be found in the file `.env`.
 1. The Elasticsearch container has its memory limited to 1GB. This can be adjusted using the environment parameter `ES_MEM_LIMIT`. Elasticsearch has a heap size of 512MB. This can be adjusted through the environment variable `ES_JVM_HEAP` and should be set to 50% of the `ES_MEM_LIMIT`.
 1. The Elasticsearch password can be set via the environment variable `ES_PASSWORD`. This sets the password for the `elastic`, `logstash_system` and `kibana` user.
 1. The Kibana container exposes the port 5601.
@@ -100,7 +98,7 @@ The following summarises some important technical considerations:
 1. The nginx and MySQL containers expose ports 80 and 3306 respectively on the host. **Ensure these ports are free prior to starting**
 1. For OS X the stats of the VM hosting docker will be reported. This allows Metricbeat to use the `system` module report on disk, memory, network, and CPU of the host.
 1. In for Filebeat to index the docker logs it mounts `/var/lib/docker/containers`. These JSON logs are ingested into the index `docker-logs-<yyyy-MM-dd>`.
-1. On systems with POSIX file permissions, all Beats configuration files are subject to ownership and file permission checks. The purpose of these checks is to prevent unauthorized users from providing or modifying configurations that are run by the Beat.  The owner of the configuration file must be either root or the user who is executing the Beat process. The permissions on the file must disallow writes by anyone other than the owner.  As we mount our configurations from the host, where the user is likely different than that used to run the container and the beat process, we disable this check for all beats with  -strict.perms=false.
+1. On systems with POSIX file permissions, all Beats configuration files are subject to ownership and file permission checks. The purpose of these checks is to prevent unauthorized users from providing or modifying configurations that are run by the Beat. The owner of the configuration file must be either root or the user who is executing the Beat process. The permissions on the file must disallow writes by anyone other than the owner.  As we mount our configurations from the host, where the user is likely different than that used to run the container and the beat process, we disable this check for all beats with `-strict.perms=false`.
 
 
 ## Generating Data
@@ -110,3 +108,16 @@ The majority of the dashboards will simply populate due to inherent “noise” 
 * MySQL - port 3306 is exposed allowing the user to connect. Any subsequent Mysql traffic will in turn be visible in the dashboards “Filebeat MySQL Dashboard”, “Metricbeat MySQL” and “Packetbeat MySQL performance”.
 * nginx - port 80. Currently we don’t host any content in nginx so requests will result in 404s.
 * Docker Logs - any activity to the docker containers, including requests to Kibana, are logged. These logs are captured in JSON form and indexed into a index `docker-logs-<yyyy.mm.dd>`.
+
+
+
+## Demo
+
+1. Show the setup of the stack.
+1. Start the stack.
+1. Show `filebeat-*` and `docker-logs-*` in Discover in Kibana.
+1. Show Metricbeat dashboards for Docker and processes.
+1. Show the Packetbeat flow and HTTP dashboards and generate some HTTP requests.
+1. Generate MySQL queries: `mysqlslap --host=127.0.0.1 --create-schema=mysqlslap --concurrency=5 --iterations=500 --user root -p`
+1. See the Metricbeat and Packetbeat dashboards for MySQL.
+1. TSVB: `docker.network.in` vs `docker.network.out` and split up by `docker.container.name`.

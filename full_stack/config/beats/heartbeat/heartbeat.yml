@@ -1,0 +1,66 @@
+heartbeat.monitors:
+
+#Monitor all containers using an icmp ping
+- type: icmp
+  schedule: '*/5 * * * * * *'
+  hosts: ["filebeat","metricbeat","packetbeat","elasticsearch","kibana","nginx","mysql"]
+  ipv4: true
+  ipv6: true
+  mode: any
+  timeout: 3s
+  wait: 1s
+
+#Monitor the Elasticsearch instance.
+- type: http
+  enabled: true
+  schedule: '@every 5s'
+  urls: ["http://elasticsearch:9200"]
+  ipv4: true
+  ipv6: true
+  mode: any
+  timeout: 3s
+  username: '${ES_USERNAME:elastic}'
+  password: '${ES_PASSWORD:changeme}'
+  check.request:
+    method: "GET"
+  check.response:
+    status: 200
+
+#Monitor the Kibana instance.
+- type: http
+  enabled: true
+  schedule: '@every 5s'
+  urls: ["http://kibana:5601"]
+  ipv4: true
+  ipv6: true
+  mode: any
+  timeout: 3s
+  check.request:
+    method: "GET"
+  check.response:
+    status: 200
+
+#Monitor the nginx instance.
+- type: http
+  enabled: true
+  schedule: '@every 5s'
+  urls: ["http://nginx/server-status"]
+  ipv4: true
+  ipv6: true
+  mode: any
+  timeout: 3s
+  check.request:
+    method: "GET"
+  check.response:
+    status: 200
+
+#Monitor the MySQL instance.
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["tcp://mysql:3306"]
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+
+logging.to_files: false

@@ -108,16 +108,3 @@ The majority of the dashboards will simply populate due to inherent “noise” 
 * MySQL - port 3306 is exposed allowing the user to connect. Any subsequent Mysql traffic will in turn be visible in the dashboards “Filebeat MySQL Dashboard”, “Metricbeat MySQL” and “Packetbeat MySQL performance”.
 * nginx - port 80. Currently we don’t host any content in nginx so requests will result in 404s.
 * Docker Logs - any activity to the docker containers, including requests to Kibana, are logged. These logs are captured in JSON form and indexed into a index `docker-logs-<yyyy.mm.dd>`.
-
-
-
-## Demo
-
-1. Show the setup of the stack.
-1. Start the stack.
-1. Show `filebeat-*` and `docker-logs-*` in Discover in Kibana.
-1. Show Metricbeat dashboards for Docker and processes.
-1. Show the Packetbeat flow and HTTP dashboards and generate some HTTP requests.
-1. Generate MySQL queries: `mysqlslap --host=127.0.0.1 --create-schema=mysqlslap --concurrency=5 --iterations=500 --user root -p`
-1. See the Metricbeat and Packetbeat dashboards for MySQL.
-1. TSVB: `docker.network.in` vs `docker.network.out` and split up by `docker.container.name`.

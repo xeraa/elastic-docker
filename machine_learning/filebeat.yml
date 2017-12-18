@@ -1,0 +1,21 @@
+filebeat.prospectors:
+- paths:
+   - /usr/local/log/log.json
+  input_type: log
+  json.keys_under_root: true
+  json.overwrite_keys: true
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "filebeat-%{[beat.version]}-%{+yyyy}"
+  bulk_max_size: 5000
+
+setup:
+  kibana.host: "kibana:5601"
+  dashboards.enabled: true
+  template:
+    name: "filebeat-%{[beat.version]}"
+    pattern: "filebeat-%{[beat.version]}-*"
+    settings.index.number_of_shards: 1
+    settings.index.number_of_replicas: 0
+    settings.index.refresh_interval: -1

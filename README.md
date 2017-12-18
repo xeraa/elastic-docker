@@ -31,7 +31,11 @@ This includes Elasticsearch, Kibana, Beats, Logstash, nginx, and MySQL and monit
 ## Machine Learning
 
 Change into the directory *./machine_learning/*.
-This includes Elasticsearch and Kibana as well as setting up the index patterns and dashboards for Filebeat. It doesn't import any data automatically — this is up to you.
+This includes Elasticsearch and Kibana as well as setting up the index patterns and dashboards for Filebeat. It assumes that you have a *log.json* file in the same directory, which will be imported automatically. Example entry:
+
+```
+{"source":"/home/ec2-user/data/production-3/prod3elasticlogs/_logs/access-logs228.log","beat":{"hostname":"ip-172-31-5-206","name":"ip-172-31-5-206","version":"5.4.0"},"@timestamp":"2017-02-28T17:14:26.963Z","read_timestamp":"2017-06-20T08:47:54.189Z","fileset":{"name":"access","module":"nginx"},"nginx":{"access":{"body_sent":{"bytes":"32898"},"url":"/static/img/wrapper-footer.png","geoip":{"continent_name":"North America","city_name":"Chicago","location":{"lat":42.0106,"lon":-87.6686},"region_name":"Illinois","country_iso_code":"US"},"response_code":"404","user_agent":{"device":"Other","os_name":"Other","os":"Other","name":"Other"},"http_version":"1.1","method":"GET","remote_ip":"213.222.148.205"}},"prospector":{"type":"log"}}
+```
 
 **Note:** For the ease of use security is disabled here.
 

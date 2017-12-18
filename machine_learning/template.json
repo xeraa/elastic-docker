@@ -1,0 +1,27 @@
+{
+  "index_patterns": [
+    "filebeat*"
+  ],
+  "mappings": {
+    "doc": {
+      "properties": {
+        "nginx": {
+          "properties": {
+            "access": {
+              "properties": {
+                "response_code": {
+                  "type": "short",
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

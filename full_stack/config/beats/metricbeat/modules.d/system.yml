@@ -15,3 +15,7 @@
   processes: ['.*']
   cpu_ticks: true
   process.cgroups.enabled: true
+  process.include_top_n:
+    enabled: true
+    by_cpu: 20
+    by_memory: 20

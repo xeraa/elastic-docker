@@ -41,6 +41,25 @@ services:
       test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
       retries: 6
 
+  #Auditbeat container
+  auditbeat:
+    container_name: auditbeat
+    hostname: auditbeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/auditbeat:${ELASTIC_VERSION}"
+    volumes:
+      #Mount the Auditbeat configuration so users can make edits.
+      - ./config/beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      elasticsearch: { condition: service_healthy }
+    command: auditbeat -e -strict.perms=false
+    pid: "host" # Set the required permissions with pid and cap_add for Auditbeat
+    cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
+    networks: ['stack']
+    restart: on-failure
+
   #Heartbeat container
   heartbeat:
     container_name: heartbeat

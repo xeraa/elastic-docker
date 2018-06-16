@@ -48,6 +48,7 @@ The following containers are deployed:
 
 * `Elasticsearch`
 * `Kibana`
+* `Auditbeat` Collect security and file integrity events.
 * `Filebeat` Collecting logs from the nginx and MySQL containers. Also responsible for indexing the host's system and Docker logs.
 * `Heartbeat` Pinging all other containers over ICMP. Additionally monitoring Elasticsearch, Kibana, and nginx over HTTP. Monitoring MySQL over TCP.
 * `Metricbeat` - Monitoring nginx and MySQL containers using status check interfaces. Additionally, used to monitor the host system with respect CPU, disk, memory, and network. Monitors the host's Docker statistics with respect to disk, CPU, health checks, memory, and network.
@@ -61,6 +62,10 @@ In addition to the above containers, a `configure_stack` container is deployed a
 ## Modules & Data
 
 The following Beats modules are utilised in this stack example to provide data and dashboards:
+
+1. Auditbeat
+    - `auditd` monitoring Linux kernel events
+    - `file_integrity` checking changes in the folders `/bin`, `/usr/bin`, `/sbin`, `/usr/sbin`, `/etc`
 
 1. Heartbeat
     - `http` monitoring nginx (80), Kibana (5601), Elasticsearch (9200)

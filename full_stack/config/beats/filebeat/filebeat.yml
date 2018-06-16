@@ -1,10 +1,13 @@
 filebeat.registry_file: /usr/share/filebeat/data/registry
 
-filebeat.config.prospectors:
+
+filebeat.config.inputs:
   path: ${path.config}/prospectors.d/*.yml
   reload.enabled: false
 
+
 filebeat.modules:
+
 #Filebeat system module consumes logs from host OS through a mounted volume.
 - module: system
   syslog:
@@ -24,7 +27,17 @@ filebeat.modules:
   slowlog:
     var.paths: ["/var/log/mysql/mysql-slow.log*"]
 
+
+xpack.monitoring.enabled: true
+
+
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
 
+
 logging.to_files: false
+
+
+setup:
+  kibana.host: "kibana:5601"
+  dashboards.enabled: true

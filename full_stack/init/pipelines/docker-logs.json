@@ -62,7 +62,7 @@
     {
       "date_index_name": {
         "field": "@timestamp",
-        "index_name_prefix": "docker-logs-",
+        "index_name_prefix": "filebeat-docker-",
         "date_rounding": "M"
       }
     }

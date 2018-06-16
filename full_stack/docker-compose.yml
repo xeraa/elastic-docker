@@ -22,7 +22,7 @@ services:
       - esdata:/usr/share/elasticsearch/data
     ports: ['9200:9200']
     healthcheck:
-      test: ["CMD", "curl","-s" ,"-f", "-u", "elastic:${ES_PASSWORD}", "http://localhost:9200/_cat/health"]
+      test: ["CMD", "curl","-s" ,"-f", "http://localhost:9200/_cat/health"]
     networks: ['stack']
 
   #Kibana container
@@ -37,24 +37,24 @@ services:
     depends_on:
       elasticsearch: { condition: service_healthy }
     restart: on-failure
-    environment:
-      - "ELASTICSEARCH_PASSWORD=${ES_PASSWORD}"
     healthcheck:
-      test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/login"]
+      test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
       retries: 6
 
   #Heartbeat container
   heartbeat:
     container_name: heartbeat
     hostname: heartbeat
+    user: root #To read the docker socket
     image: "docker.elastic.co/beats/heartbeat:${ELASTIC_VERSION}"
     volumes:
+      #Mount the Heartbeat configuration so users can make edits.
       - ./config/beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       elasticsearch: { condition: service_healthy }
-    environment:
-      - "ES_PASSWORD=${ES_PASSWORD}"
-    command: heartbeat -e -E output.elasticsearch.username=elastic -E output.elasticsearch.password=${ES_PASSWORD} -strict.perms=false
+    command: heartbeat -e -strict.perms=false
     networks: ['stack']
     restart: on-failure
 
@@ -62,7 +62,7 @@ services:
   filebeat:
     container_name: filebeat
     hostname: filebeat
-    user: root
+    user: root #To read the docker socket
     image: "docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}"
     volumes:
       #Mount the Filebeat configuration so users can make edits.
@@ -79,8 +79,10 @@ services:
       - /var/lib/docker/containers:/hostfs/var/lib/docker/containers
       #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication.
       - filebeatdata:/usr/share/filebeat/data/
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
     networks: ['stack']
-    command: filebeat -e -E output.elasticsearch.username=elastic -E output.elasticsearch.password=${ES_PASSWORD} -strict.perms=false
+    command: filebeat -e -strict.perms=false
     restart: on-failure
     depends_on:
       elasticsearch: { condition: service_healthy }
@@ -89,7 +91,7 @@ services:
   metricbeat:
     container_name: metricbeat
     hostname: metricbeat
-    user: root
+    user: root #To read the docker socket
     image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
     volumes:
       #Mount the metricbeat configuration so users can make edits.
@@ -103,7 +105,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       #We mount the host filesystem so we can report on disk usage with the system module.
       - /:/hostfs:ro
-    command: metricbeat -e -system.hostfs=/hostfs -E output.elasticsearch.username=elastic -E output.elasticsearch.password=${ES_PASSWORD} -strict.perms=false
+    command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false
     networks: ['stack']
     restart: on-failure
     environment:
@@ -115,16 +117,20 @@ services:
   packetbeat:
     container_name: packetbeat
     hostname: packetbeat
+    user: root #To read the docker socket
     image: "docker.elastic.co/beats/packetbeat:${ELASTIC_VERSION}"
     volumes:
       #Mount the packetbeat configuration so users can make edits.
       - ./config/beats/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
     # Packetbeat needs some elevated privileges to capture network traffic. We'll grant them with POSIX capabilities.
     cap_add: ['NET_RAW', 'NET_ADMIN']
     # Use "host mode" networking to allow Packetbeat to capture traffic from the real network interface on the host,
     # rather than being isolated to the container's virtual interface.
     network_mode: host
-    command: packetbeat -e -E output.elasticsearch.hosts='["localhost:9200"]' -E output.elasticsearch.username=elastic -E output.elasticsearch.password=${ES_PASSWORD} -strict.perms=false
+    restart: on-failure
+    command: packetbeat -e -strict.perms=false
     depends_on:
       elasticsearch:  { condition: service_healthy }
 
@@ -158,14 +164,14 @@ services:
       - ./logs/mysql:/var/log/mysql/
 
   #Configure Stack container. This short lived container configures the stack once Kibana and Elasticsearch are available.
-  #More specifically, using a script it sets passwords, import dashboards, sets a default index pattern, loads templates and pipelines.
+  #More specifically, using a script it sets a default index pattern, loads templates and pipelines.
   configure_stack:
     container_name: configure_stack
     image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
     volumes: ['./init/configure-stack.sh:/usr/local/bin/configure-stack.sh:ro','./init/pipelines/:/usr/local/bin/pipelines/','./init/templates/:/usr/local/bin/templates/']
     command: ['/bin/bash', '-c', 'cat /usr/local/bin/configure-stack.sh | tr -d "\r" | bash']
     networks: ['stack']
-    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}','ES_PASSWORD=${ES_PASSWORD}','DEFAULT_INDEX_PATTERN=${DEFAULT_INDEX_PATTERN}']
+    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}']
     depends_on: ['elasticsearch','kibana']
 
 

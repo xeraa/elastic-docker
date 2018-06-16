@@ -1,24 +1,24 @@
 #We monitor any devices on the host OS. For OSX this is the VM hosting Docker.
 packetbeat.interfaces.device: any
 
+
 packetbeat.flows:
   enabled: true
   timeout: 30s
   period: 10s
 
-packetbeat.protocols.icmp:
+
+packetbeat.protocols:
+
+- type: icmp
   enabled: true
 
-packetbeat.protocols.dns:
-  enabled: true
+- type: dns
   ports: [53]
-  include_authorities: true
-  include_additionals: true
 
 #We monitor any traffic to Kibana, ngnix, and Elasticsearch.
-packetbeat.protocols.http:
-  enabled: true
-  ports: [9200, 80, 5601]
+- type: http
+  ports: [80, 5601, 9200]
   send_headers: true
   send_all_headers: true
   split_cookie: true
@@ -26,10 +26,24 @@ packetbeat.protocols.http:
   send_response: false
   transaction_timeout: 10s
 
-packetbeat.protocols.mysql:
+- type: mysql
   ports: [3306]
 
+
+processors:
+- add_docker_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
 output.elasticsearch:
-  hosts: ["localhost:9200"]
+  hosts: ["localhost:9200"] #Needs to use localhost, since we are on a different network
+
 
 logging.to_files: false
+
+
+setup:
+  kibana.host: "localhost:5601" #Needs to use localhost, since we are on a different network
+  dashboards.enabled: true

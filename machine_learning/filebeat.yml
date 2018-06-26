@@ -16,6 +16,7 @@ setup:
   template:
     name: "filebeat-%{[beat.version]}"
     pattern: "filebeat-%{[beat.version]}-*"
-    settings.index.number_of_shards: 1
-    settings.index.number_of_replicas: 0
-    settings.index.refresh_interval: -1
+    settings.index:
+      number_of_shards: 1
+      number_of_replicas: 0
+      refresh_interval: -1

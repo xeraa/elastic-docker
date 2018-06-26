@@ -3,7 +3,7 @@ version: '2'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:$ELASTIC_VERSION
+    image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTIC_VERSION
     environment:
       - bootstrap.memory_lock=true
       - discovery.type=single-node
@@ -21,7 +21,7 @@ services:
     networks: ['stack']
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-x-pack:$ELASTIC_VERSION
+    image: docker.elastic.co/kibana/kibana:$ELASTIC_VERSION
     links:
       - elasticsearch
     ports:
@@ -35,8 +35,11 @@ services:
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./log.json:/usr/local/log/log.json:ro
       - ./template.json:/usr/local/filebeat/template.json
-    # Customize the template and then run Filebeat
-    command: bash -c "curl -XPUT 'http://elasticsearch:9200/_template/filebeat' -d @/usr/local/filebeat/template.json -H 'Content-Type:application/json' && filebeat -e"
+    # Customize the template, activate the trial, and then run Filebeat
+    command: >
+      bash -c "curl -XPUT 'http://elasticsearch:9200/_template/filebeat' -d @/usr/local/filebeat/template.json -H 'Content-Type:application/json' &&
+      curl -XPOST 'http://elasticsearch:9200/_xpack/license/start_trial?acknowledge=true' &&
+      filebeat -e"
     restart: on-failure
     networks: ['stack']
     depends_on: ['kibana']

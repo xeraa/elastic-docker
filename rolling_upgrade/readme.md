@@ -17,10 +17,11 @@ POST test/_doc
 
 # Check the upgrade assistant
 
+# Don't set to none since Kibana wants to create indices when starting up with 7
 PUT _cluster/settings
 {
   "transient": {
-    "cluster.routing.allocation.enable": "none"
+    "cluster.routing.allocation.enable": "new_primaries"
   }
 }
 
@@ -46,6 +47,8 @@ POST test/_doc
 {
   "name": "Elasticsearch 7.0"
 }
+
+GET test/_search
 
 # Check the upgrade assistant and reindex
 

@@ -17,7 +17,7 @@ POST test/_doc
 
 # Check the upgrade assistant
 
-# Don't set to none since Kibana wants to create indices when starting up with 7
+# Do not set to none since Kibana wants to create indices when starting up with 7
 PUT _cluster/settings
 {
   "transient": {

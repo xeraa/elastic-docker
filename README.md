@@ -5,16 +5,10 @@ This repository contains a few examples how to run Elasticsearch, Kibana, Beats,
 You connect to Kibana on [http://localhost:5601](http://localhost:5601) and Elasticsearch on [http://localhost:9200](http://localhost:9200).
 
 
-## Minimal Elasticsearch + Kibana
-
-* Start: `$ docker-compose -f elasticsearch-kibana-minimal.yml up`
-* Remove: `$ docker-compose -f elasticsearch-kibana-minimal.yml down`
-
-
 ## Elasticsearch & Kibana
 
-* Start: `$ docker-compose -f elasticsearch-kibana.yml up`
-* Remove: `$ docker-compose -f elasticsearch-kibana.yml down`
+* Start: `$ docker-compose up`
+* Remove: `$ docker-compose down -v`
 
 
 ## Full Stack
@@ -25,7 +19,7 @@ This includes Elasticsearch, Kibana, Beats, Logstash, nginx, and MySQL and monit
 **Note:** You will need to increase the memory for all the containers to function correctly. Tested with 4GB instead of the default of 2GB.
 
 * Start: `$ docker-compose up`
-* Remove: `$ docker-compose down`
+* Remove: `$ docker-compose down -v`
 
 
 ## Rolling Upgrade
@@ -34,7 +28,7 @@ Change into the *rolling_upgrade/* directory.
 This demos a rolling upgrade from 6.x to 7.x. See the details in the [readme](./rolling_upgrade/).
 
 * Start: `$ docker-compose up`
-* Remove: `$ docker-compose down`
+* Remove: `$ docker-compose down -v`
 
 
 ## Machine Learning
@@ -49,4 +43,4 @@ This includes Elasticsearch and Kibana as well as setting up the index patterns 
 **Note:** You will need to increase the memory for all the containers to function correctly. Tested with 4GB instead of the default of 2GB.
 
 * Start: `$ docker-compose up`
-* Remove: `$ docker-compose down`
+* Remove: `$ docker-compose down -v`

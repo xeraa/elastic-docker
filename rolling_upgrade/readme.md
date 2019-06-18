@@ -12,7 +12,7 @@ GET _cluster/health
 
 POST test/_doc
 {
-  "name": "Elasticsearch 6.7"
+  "name": "Elasticsearch 6.8"
 }
 
 # Check the upgrade assistant
@@ -27,7 +27,7 @@ PUT _cluster/settings
 
 POST _flush/synced
 
-# Change .env and switch the commented and uncommented sections
+# Change .env and comment out the 6.x settings discovery.zen.*; only enable discovery.seed_hosts
 # docker-compose up -d --no-deps elasticsearch3
 
 GET _cat/nodes?h=id,version,master,name&v
@@ -45,7 +45,7 @@ PUT _cluster/settings
 
 POST test/_doc
 {
-  "name": "Elasticsearch 7.0"
+  "name": "Elasticsearch 7.1"
 }
 
 GET test/_search
@@ -55,5 +55,7 @@ GET test/_search
 GET _cat/indices
 ```
 
-* 🥳 the new cluster
-* Clean up with `docker-compose down -v`.
+* 🥳 the new cluster. And it's already prepared for the 8.0 migration 😉.
+* Do a full cluster stop with `docker stop <elasticsearch-id` for all three nodes and then restart them again.
+* Scale down to only the elasticsearch3 node by running `POST /_cluster/voting_config_exclusions/elasticsearch1` and `POST /_cluster/voting_config_exclusions/elasticsearch2` and then stopping those nodes.
+* Remove everything with `docker-compose down -v` and then restart it with `docker-compose up`. This will fail (see the error message). Remove everything again, enable the `cluster.initial_master_nodes`, and see how it works now.

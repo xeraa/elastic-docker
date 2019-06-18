@@ -21,7 +21,7 @@ services:
         hard: -1
     mem_limit: 1g
     volumes:
-      - esdata_revolution1:/usr/share/elasticsearch/data
+      - esdata_upgrade1:/usr/share/elasticsearch/data
     ports:
       - 9201:9200
     networks:
@@ -47,7 +47,7 @@ services:
         hard: -1
     mem_limit: 1g
     volumes:
-      - esdata_revolution2:/usr/share/elasticsearch/data
+      - esdata_upgrade2:/usr/share/elasticsearch/data
     ports:
       - 9202:9200
     networks:
@@ -73,7 +73,7 @@ services:
         hard: -1
     mem_limit: 1g
     volumes:
-      - esdata_revolution3:/usr/share/elasticsearch/data
+      - esdata_upgrade3:/usr/share/elasticsearch/data
     ports:
       - 9203:9200
     networks:
@@ -96,11 +96,11 @@ services:
       - esnet
 
 volumes:
-  esdata_revolution1:
+  esdata_upgrade1:
     driver: local
-  esdata_revolution2:
+  esdata_upgrade2:
     driver: local
-  esdata_revolution3:
+  esdata_upgrade3:
     driver: local
 
 networks:

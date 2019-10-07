@@ -45,7 +45,7 @@ PUT _cluster/settings
 
 POST test/_doc
 {
-  "name": "Elasticsearch 7.1"
+  "name": "Elasticsearch 7.4"
 }
 
 GET test/_search

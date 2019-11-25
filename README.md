@@ -11,6 +11,17 @@ You connect to Kibana on [http://localhost:5601](http://localhost:5601) and Elas
 * Remove: `$ docker-compose down -v`
 
 
+## App Search
+
+Change into the *appsearch/* directory.
+This includes Elasticsearch, Kibana, and App Search.
+
+* Start: `$ docker-compose up`
+* Remove: `$ docker-compose down -v`
+
+App Search is running at [http://localhost:3002](http://localhost:3002).
+
+
 ## Full Stack
 
 Change into the *full_stack/* directory.

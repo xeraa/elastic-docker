@@ -1,4 +1,4 @@
-filebeat.registry_file: /usr/share/filebeat/data/registry
+filebeat.registry.path: /usr/share/filebeat/data/registry
 
 
 filebeat.config.inputs:
@@ -28,7 +28,7 @@ filebeat.modules:
     var.paths: ["/var/log/mysql/mysql-slow.log*"]
 
 
-xpack.monitoring.enabled: true
+monitoring.enabled: true
 
 
 output.elasticsearch:

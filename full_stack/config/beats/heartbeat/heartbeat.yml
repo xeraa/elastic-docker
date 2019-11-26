@@ -70,7 +70,7 @@ processors:
 - add_docker_metadata: ~
 
 
-xpack.monitoring.enabled: true
+monitoring.enabled: true
 
 
 output.elasticsearch:
@@ -78,8 +78,3 @@ output.elasticsearch:
 
 
 logging.to_files: false
-
-
-setup:
-  kibana.host: "kibana:5601"
-  dashboards.enabled: true

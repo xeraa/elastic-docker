@@ -8,7 +8,7 @@ processors:
 - add_docker_metadata: ~
 
 
-xpack.monitoring.enabled: true
+monitoring.enabled: true
 
 
 output.elasticsearch:

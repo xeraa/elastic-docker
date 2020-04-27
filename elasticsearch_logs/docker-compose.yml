@@ -1,0 +1,56 @@
+---
+version: '3.3'
+services:
+
+  elasticsearch:
+    container_name: elasticsearch
+    hostname: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTIC_VERSION
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    labels:
+      co.elastic.logs/module: elasticsearch
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - stack
+
+  kibana:
+    container_name: kibana
+    hostname: kibana
+    image: docker.elastic.co/kibana/kibana:$ELASTIC_VERSION
+    labels:
+      co.elastic.logs/module: kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+    networks:
+      - stack
+
+  filebeat:
+    container_name: filebeat
+    hostname: filebeat
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+    user: root
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: filebeat -e
+    depends_on:
+      - elasticsearch
+      - kibana
+    restart: on-failure
+    networks:
+      - stack
+
+volumes:
+  esdata1:
+    driver: local
+networks:
+  stack:

@@ -1,20 +1,20 @@
 ---
-version: '2'
+version: '2.2'
 services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTIC_VERSION
     environment:
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
     mem_limit: 1g
     volumes:
-      - esdata1:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
 
@@ -26,5 +26,5 @@ services:
       - 5601:5601
 
 volumes:
-  esdata1:
+  esdata:
     driver: local

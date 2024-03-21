@@ -1,66 +1,32 @@
 # Docker & Elastic
 
-This repository contains a few examples how to run Elasticsearch, Kibana, Beats, and Logstash in Docker using the official images and binding them to the default ports. Tested with the latest version of the Docker daemon.
+This repository contains a few examples of how to run Elasticsearch and Kibana 7.x and 8.x in Docker Compose for local development and testing. Using the official images and binding them to the default ports. Tested with the latest version of the Docker daemon.
 
-You connect to Kibana on [http://localhost:5601](http://localhost:5601) and Elasticsearch on [http://localhost:9200](http://localhost:9200).
-
-
-## Elasticsearch & Kibana
-
-* Start: `$ docker-compose up`
-* Remove: `$ docker-compose down -v`
+Older examples for version 6.x and 7.x are in the [Elastic Stack 7 + 6 release](https://github.com/xeraa/elastic-docker/releases/tag/seven%2Bsix).
 
 
-## App Search
-
-Change into the *appsearch/* directory.
-This demo includes Elasticsearch, Kibana, and App Search.
-
-* Start: `$ docker-compose up`
-* Remove: `$ docker-compose down -v`
-
-App Search is running at [http://localhost:3002](http://localhost:3002).
 
 
-## Elasticsearch Logs
 
-Change into the *elasticsearch_logs/* directory.
-This demo includes Elasticsearch, Kibana, and Filebeat to collect the Elasticsearch logs with the Elastic Stock. The blog post [Filebeat Modules with Docker & Kubernetes](https://xeraa.net/blog/2020_filebeat-modules-with-docker-kubernetes/) is built on top of this setup.
+## Official
 
-* Start: `$ docker-compose up`
-* Remove: `$ docker-compose down -v`
+This is a minor adaptation of the [Docker Compose example from the official documentation](https://github.com/elastic/elasticsearch/blob/8.11/docs/reference/setup/install/docker/docker-compose.yml) with a self-signed certificate. The main difference is that the certificates are only generated once (automatically) and stored in the folder *official/.certs/*, so that they are easier to use.
 
+Change into the *official/* folder and run Elasticsearch and Kibana.
 
-## Full Stack
+* Start: `docker-compose up`
+* Remove: `docker-compose down -v`
 
-Change into the *full_stack/* directory.
-This demo includes Elasticsearch, Kibana, Beats, Logstash, nginx, and MySQL and monitors all components with the Elastic Stack.
-
-**Note:** You will need to increase the memory for all the containers to function correctly. Tested with 4GB instead of the default of 2GB.
-
-* Start: `$ docker-compose up`
-* Remove: `$ docker-compose down -v`
+Connect to Elasticsearch at [https://localhost:9200](https://localhost:9200) and Kibana at [http://localhost:5601](http://localhost:5601) (without TLS).
+To query Elasticsearch with cURL run `curl --cacert .certs/ca/ca.crt -u elastic https://localhost:9200` and enter the `ELASTIC_PASSWORD` password from the *official/.env* file.
 
 
-## Rolling Upgrade
 
-Change into the *rolling_upgrade/* directory.
-This demo shows a rolling upgrade from 6.x to 7.x. See the details in the [readme](./rolling_upgrade/).
+## Insecure
 
-* Start: `$ docker-compose up`
-* Remove: `$ docker-compose down -v`
+**Don't do this.** But if you must: Change into the *insecure/* folder and run Elasticsearch and Kibana without authentication or TLS.
 
+* Start: `docker-compose up`
+* Remove: `docker-compose down -v`
 
-## Machine Learning
-
-Change into the *machine_learning/* directory.
-This demo includes Elasticsearch and Kibana as well as setting up the index patterns and dashboards for Filebeat. It assumes that you have a *log.json* file in the same directory, which will be imported automatically. Example entry:
-
-```json
-{"source.name":"/home/ec2-user/data/production-3/prod3elasticlogs/_logs/access-logs228.log","beat":{"hostname":"ip-172-31-5-206","name":"ip-172-31-5-206","version":"5.4.0"},"@timestamp":"2017-02-28T17:14:26.963Z","read_timestamp":"2017-06-20T08:47:54.189Z","fileset":{"name":"access","module":"nginx"},"nginx":{"access":{"body_sent":{"bytes":"32898"},"url":"/static/img/wrapper-footer.png","geoip":{"continent_name":"North America","city_name":"Chicago","location":{"lat":42.0106,"lon":-87.6686},"region_name":"Illinois","country_iso_code":"US"},"response_code":"404","user_agent":{"device":"Other","os_name":"Other","os":"Other","name":"Other"},"http_version":"1.1","method":"GET","remote_ip":"213.222.148.205"}},"prospector":{"type":"log"}}
-```
-
-**Note:** You will need to increase the memory for all the containers to function correctly. Tested with 4GB instead of the default of 2GB.
-
-* Start: `$ docker-compose up`
-* Remove: `$ docker-compose down -v`
+Connect to Elasticsearch at [http://localhost:9200](http://localhost:9200) and Kibana at [http://localhost:5601](http://localhost:5601).

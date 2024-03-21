@@ -1,0 +1,49 @@
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    environment:
+      - node.name=elasticsearch
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 127.0.0.1:9200:9200
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -I http://localhost:9200 | grep -q 'HTTP/1.1 200 OK'",
+        ]
+      interval: 5s
+      timeout: 2s
+      retries: 24
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    mem_limit: 1g
+    ports:
+      - 127.0.0.1:5601:5601
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -I http://localhost:5601/app/home | grep -q 'HTTP/1.1 200 OK'",
+        ]
+      interval: 5s
+      timeout: 2s
+      retries: 24
+
+volumes:
+  esdata:
+    driver: local
